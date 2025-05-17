@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "../api/axios";
 import { toast } from "react-toastify";
-import CodePioneersImage from "../assets/images/CodePioneers.jpg";
+import EasyStayImage from "../assets/images/EasyStay.png";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ERROR_MESSAGES from "../constants/ErrorMessages.js";
@@ -105,18 +105,18 @@ const Register = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50">
+    <div className="flex flex-col lg:flex-row h-screen bg-light-gray">
       <div className="flex items-center justify-center w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-6 bg-white h-full">
-        <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold text-indigo-600 text-center mb-6">
-            Sign Up to <span className="text-black">CodePioneers</span>
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+          <h2 className="text-2xl font-bold text-charcoal-gray text-center mb-6 font-lora">
+            Sign Up to <span className="text-teal">EasyStay</span>
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
                 htmlFor="username"
-                className="block font-medium text-gray-700"
+                className="block font-medium text-charcoal-gray font-roboto"
               >
                 Username:
                 <span className="inline-flex items-center space-x-2 ml-2">
@@ -135,13 +135,11 @@ const Register = () => {
                 aria-describedby="uidnote"
                 onFocus={() => setUserFocus(true)}
                 onBlur={() => setUserFocus(false)}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
               />
               <p
                 id="uidnote"
-                className={`mt-2 text-sm rounded-md p-3 bg-black text-white shadow-md ${
-                  userFocus && user && !validName ? "block" : "hidden"
-                }`}
+                className={`mt-2 text-sm rounded-md p-3 bg-black text-white shadow-md font-roboto ${userFocus && user && !validName ? "block" : "hidden"}`}
               >
                 <FontAwesomeIcon icon={faInfoCircle} className="mr-1" />
                 4 to 24 characters.
@@ -155,7 +153,7 @@ const Register = () => {
             <div>
               <label
                 htmlFor="firstname"
-                className="block font-medium text-gray-700"
+                className="block font-medium text-charcoal-gray font-roboto"
               >
                 First Name:
                 {renderValidationIcon(firstname.trim().length > 0, firstname)}
@@ -167,14 +165,14 @@ const Register = () => {
                 value={firstname}
                 onChange={(e) => setFirstname(e.target.value)}
                 required
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
               />
             </div>
 
             <div>
               <label
                 htmlFor="lastname"
-                className="block font-medium text-gray-700"
+                className="block font-medium text-charcoal-gray font-roboto"
               >
                 Last Name:
                 {renderValidationIcon(lastname.trim().length > 0, lastname)}
@@ -186,14 +184,14 @@ const Register = () => {
                 value={lastname}
                 onChange={(e) => setLastname(e.target.value)}
                 required
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
               />
             </div>
 
             <div>
               <label
                 htmlFor="email"
-                className="block font-medium text-gray-700"
+                className="block font-medium text-charcoal-gray font-roboto"
               >
                 Email:
                 {renderValidationIcon(isValidEmail, email)}
@@ -205,14 +203,14 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
               />
             </div>
 
             <div>
               <label
                 htmlFor="gender"
-                className="block font-medium text-gray-700"
+                className="block font-medium text-charcoal-gray font-roboto"
               >
                 Gender:
                 {renderValidationIcon(gender !== "", gender)}
@@ -223,7 +221,7 @@ const Register = () => {
                 autoComplete="off"
                 onChange={(e) => setGender(e.target.value)}
                 required
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
               >
                 <option value="">Select Gender</option>
                 <option value="MALE">Male</option>
@@ -235,7 +233,7 @@ const Register = () => {
             <div>
               <label
                 htmlFor="birthdate"
-                className="block font-medium text-gray-700"
+                className="block font-medium text-charcoal-gray font-roboto"
               >
                 Birthdate:
                 {renderValidationIcon(isValidDate, birthdate)}
@@ -249,7 +247,7 @@ const Register = () => {
                 autoComplete="off"
                 placeholder="dd/mm/yyyy"
                 pattern="^\d{2}/\d{2}/\d{4}$"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
               />
             </div>
 
@@ -263,17 +261,17 @@ const Register = () => {
                 !gender.trim() ||
                 !birthdate.trim()
               }
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
+              className="w-full bg-teal text-white py-2 px-4 rounded-2xl font-montserrat font-bold hover:bg-teal-dark transition-colors duration-200 disabled:opacity-50 cursor-pointer shadow-md"
             >
               Sign Up
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-charcoal-gray font-roboto">
             Already registered?{" "}
             <Link
               to="/sign-in"
-              className="text-black hover:text-indigo-700 font-medium"
+              className="text-warm-orange hover:text-teal font-medium font-montserrat transition-colors duration-200"
             >
               Sign In
             </Link>
@@ -283,8 +281,8 @@ const Register = () => {
 
       <div className="hidden lg:block lg:w-1/2 h-full">
         <img
-          src={CodePioneersImage}
-          alt="CodePioneers"
+          src={EasyStayImage}
+          alt="EasyStay"
           className="w-full h-full object-cover"
         />
       </div>

@@ -38,20 +38,20 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-indigo-600 text-center mb-6">
+    <div className="flex items-center justify-center h-screen bg-light-gray px-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
+        <h2 className="text-2xl font-bold text-charcoal-gray text-center mb-6 font-lora">
           Forgot Password
         </h2>
-        <p className="text-sm text-gray-600 text-center mb-4">
+        <p className="text-sm text-charcoal-gray text-center mb-4 font-roboto">
           Enter your username and we’ll send you an email with instructions to
           reset your password.
         </p>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 font-roboto">
           <div>
             <label
               htmlFor="username"
-              className="block font-medium text-gray-700"
+              className="block font-medium text-charcoal-gray font-roboto"
             >
               Username:
             </label>
@@ -62,19 +62,19 @@ const ForgetPassword = () => {
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="off"
               required
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
+            className="w-full bg-teal text-white py-2 px-4 rounded-2xl font-montserrat font-bold hover:bg-teal-dark transition-colors duration-200 disabled:opacity-50 cursor-pointer shadow-md"
           >
             {loading ? "Sending..." : "Send Reset Link"}
           </button>
         </form>
-        <p className="text-xs text-center text-gray-500 mt-4">
+        <p className="text-xs text-center text-charcoal-gray mt-4 font-roboto">
           Haven’t received it? Check your spam folder just in case.
         </p>
       </div>

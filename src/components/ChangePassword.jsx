@@ -56,16 +56,16 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-indigo-600 text-center mb-4">
+    <div className="flex flex-col items-center justify-center h-screen bg-light-gray px-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
+        <h2 className="text-2xl font-bold text-charcoal-gray text-center mb-4 font-lora">
           Change Your Password
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 font-roboto">
           <div>
             <label
               htmlFor="newPassword"
-              className="block font-medium text-gray-700"
+              className="block font-medium text-charcoal-gray font-roboto"
             >
               New Password:
               <FontAwesomeIcon
@@ -90,12 +90,14 @@ const ChangePassword = () => {
               aria-describedby="pwdnote"
               onFocus={() => setPwdFocus(true)}
               onBlur={() => setPwdFocus(false)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
             />
             <p
               id="pwdnote"
               className={
-                pwdFocus && !validPwd ? "text-sm text-gray-600 mt-1" : "hidden"
+                pwdFocus && !validPwd
+                  ? "text-sm text-charcoal-gray mt-1 font-roboto"
+                  : "hidden"
               }
             >
               <FontAwesomeIcon icon={faInfoCircle} className="mr-1" />8 to 24
@@ -107,7 +109,7 @@ const ChangePassword = () => {
           <div>
             <label
               htmlFor="repeatPassword"
-              className="block font-medium text-gray-700"
+              className="block font-medium text-charcoal-gray font-roboto"
             >
               Confirm Password:
               <FontAwesomeIcon
@@ -134,13 +136,13 @@ const ChangePassword = () => {
               aria-describedby="confirmnote"
               onFocus={() => setMatchFocus(true)}
               onBlur={() => setMatchFocus(false)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
             />
             <p
               id="confirmnote"
               className={
                 matchFocus && !validMatch
-                  ? "text-sm text-gray-600 mt-1"
+                  ? "text-sm text-charcoal-gray mt-1 font-roboto"
                   : "hidden"
               }
             >
@@ -152,7 +154,7 @@ const ChangePassword = () => {
           <button
             type="submit"
             disabled={loading || !validPwd || !validMatch}
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
+            className="w-full bg-teal text-white py-2 px-4 rounded-2xl font-montserrat font-bold hover:bg-teal-dark transition-colors duration-200 disabled:opacity-50 cursor-pointer shadow-md"
           >
             {loading ? "Submitting..." : "Change Password"}
           </button>

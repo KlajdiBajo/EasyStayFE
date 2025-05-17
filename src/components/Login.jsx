@@ -3,7 +3,7 @@ import useAuth from "../hooks/useAuth.jsx";
 import axios from "../api/axios.js";
 import { toast } from "react-toastify";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import CodePioneersImage from "../assets/images/CodePioneers.jpg";
+import EasyStayImage from "../assets/images/EasyStay.png";
 import ERROR_MESSAGES from "../constants/ErrorMessages.js";
 
 const LOGIN_URL = "/auth/login";
@@ -59,17 +59,17 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50">
+    <div className="flex flex-col lg:flex-row h-screen bg-light-gray">
       <div className="flex items-center justify-center w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-6 bg-white h-full">
-        <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold text-indigo-600 text-center mb-6">
-            Sign In to <span className="text-black">CodePioneers</span>
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+          <h2 className="text-2xl font-bold text-charcoal-gray text-center mb-6 font-lora">
+            Sign In to <span className="text-teal">EasyStay</span>
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
                 htmlFor="username"
-                className="block font-medium text-gray-700"
+                className="block font-medium text-charcoal-gray font-roboto"
               >
                 Username:
               </label>
@@ -81,14 +81,14 @@ function Login() {
                 onChange={(e) => setUser(e.target.value)}
                 value={user}
                 required
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block font-medium text-gray-700"
+                className="block font-medium text-charcoal-gray font-roboto"
               >
                 Password:
               </label>
@@ -98,12 +98,12 @@ function Login() {
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
                 required
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
               />
               <div className="mt-2 text-right">
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                  className="text-sm text-warm-orange hover:text-teal font-medium font-montserrat transition-colors duration-200"
                 >
                   Forgot password?
                 </Link>
@@ -113,17 +113,17 @@ function Login() {
             <button
               type="submit"
               disabled={!user.trim() || !pwd.trim()}
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
+              className="w-full bg-teal text-white py-2 px-4 rounded-2xl font-montserrat font-bold hover:bg-teal-dark transition-colors duration-200 disabled:opacity-50 cursor-pointer shadow-md"
             >
               Sign In
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-charcoal-gray font-roboto">
             Not registered yet?{" "}
             <Link
               to="/sign-up"
-              className="text-black hover:text-indigo-700 font-medium"
+              className="text-warm-orange hover:text-teal font-medium font-montserrat transition-colors duration-200"
             >
               Sign Up
             </Link>
@@ -132,8 +132,8 @@ function Login() {
       </div>
       <div className="hidden lg:block lg:w-1/2 h-full">
         <img
-          src={CodePioneersImage}
-          alt="CodePioneers"
+          src={EasyStayImage}
+          alt="EasyStay"
           className="w-full h-full object-cover"
         />
       </div>
