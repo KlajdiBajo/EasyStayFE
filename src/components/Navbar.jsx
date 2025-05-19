@@ -1,133 +1,107 @@
 import React from "react";
 import { assets } from "../assets/images/assets";
-import { Link } from "react-router-dom";
-import { useNavigate, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth.jsx";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { FiUser } from "react-icons/fi";
 
 const Navbar = () => {
-    const navLinks = [
-        { name: 'Home Page', path: '/' },
-        { name: 'Hotels', path: '/' },
-        { name: 'Bookings', path: '/' },
-        { name: 'Report', path: '/' },
-    ];
+  const publicLinks = [
+    { name: "Home", path: "/" },
+    { name: "Hotels", path: "/hotels" },
+  ];
+  // Private links for logged-in users
+  const privateLinks = [
+    { name: "My Bookings", path: "/bookings" },
+    { name: "Report", path: "/report" },
+  ];
 
-    const [isScrolled, setIsScrolled] = React.useState(false);
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    
-    const { auth, setAuth } = useAuth();
-    const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const isLoggedIn = !!auth?.accessToken;
+  const isHome = location.pathname === "/";
+  const isLoggedIn = !!auth?.accessToken;
 
-    const linkClass = ({ isActive }) =>
-        isActive
-        ? "bg-black text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
-        : "text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2";
+  const handleAuthClick = () => {
+    if (isLoggedIn) {
+      setAuth({});
+      navigate("/sign-in");
+    } else {
+      navigate("/sign-in");
+    }
+  };
 
-    const handleAuthClick = () => {
-        if (isLoggedIn) {
-        setAuth({});
-        navigate("/sign-in");
-        } else {
-        navigate("/sign-in");
-        }
-    };           // returns empty string for now
+  const navbarShadow = isHome ? "" : "shadow";
+  const navbarBg = isHome ? "bg-transparent" : "bg-white";
 
-    React.useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+  return (
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-20 py-4 ${navbarBg} ${navbarShadow}`}
+      style={{ minHeight: "72px" }}
+    >
+      {/* Logo & Brand */}
+      <Link to="/" className="flex items-center gap-3 min-w-[170px]">
+        <img src={assets.logo} alt="logo" className="h-9" />
+        <span className={`font-bold text-2xl tracking-tight ${isHome ? "text-white" : "text-gray-900"}`}>
+          EasyStay
+        </span>
+      </Link>
 
-    return (
-        <nav className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4" : "py-4 md:py-6"}`}>
+      {/* Links Centered */}
+      <div className="hidden md:flex items-center gap-4 lg:gap-8">
+        {/* Public links */}
+        {publicLinks.map((link, i) => (
+          <NavLink
+            key={i}
+            to={link.path}
+            className={`group flex flex-col gap-0.5 ${isHome ? "text-white" : "text-gray-700"}`}
+          >
+            {link.name}
+            <div className={`${isHome ? "bg-white" : "bg-gray-700"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} />
+          </NavLink>
+        ))}
+        {/* Private links if logged in */}
+        {isLoggedIn && auth.user && privateLinks.map((link, i) => (
+          <NavLink
+            key={i + publicLinks.length}
+            to={link.path}
+            className={`group flex flex-col gap-0.5 ${isHome ? "text-white" : "text-gray-700"}`}
+          >
+            {link.name}
+            <div className={`${isHome ? "bg-white" : "bg-gray-700"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} />
+          </NavLink>
+        ))}
+      </div>
 
-            {/* Logo */}
-            <Link to='/' className="flex items-center gap-2">
-                <img src={assets.logo} alt="logo" className={`h-9 ${isScrolled && "invert opacity-80"}`} />
-                <span className="hidden md:block text-white text-2xl font-bold ml-2">
-                    EasyStay
-                </span>
-            </Link>
+      {/* Right Side: Login/Profile */}
+      <div className="min-w-[170px] flex justify-end">
+        {isLoggedIn && auth.user ? (
+          <div className="flex items-center gap-2">
+            <FiUser className={`h-6 w-6 ${isHome ? "text-white" : "text-gray-700"}`} />
+            <span className={`font-semibold ${isHome ? "text-white" : "text-gray-800"}`}>
+              {auth.user.username}
+            </span>
+            <button
+              onClick={handleAuthClick}
+              className={`flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-7 py-2 rounded-full font-medium text-base shadow`}
+            >
+              <FaSignOutAlt className="inline mr-2" />
+              Logout
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={handleAuthClick}
+            className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-8 py-2 rounded-full font-medium text-base shadow"
+          >
+            <FaSignInAlt className="inline mr-2" />
+            Login
+          </button>
+        )}
+      </div>
+    </nav>
+  );
+};
 
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-4 lg:gap-8">
-                {navLinks.map((link, i) => (
-                    <a key={i} href={link.path} className={`group flex flex-col gap-0.5 ${isScrolled ? "text-gray-700" : "text-white"}`}>
-                        {link.name}
-                        <div className={`${isScrolled ? "bg-gray-700" : "bg-white"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} />
-                    </a>
-                ))}
-                <button className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? 'text-black' : 'text-white'} transition-all`}>
-                    Dashboard
-                </button>
-            </div>
-
-            {/* Desktop Right */}
-            <div className="flex items-center">
-                <button
-                    onClick={handleAuthClick}
-                    className="flex items-center gap-2 bg-black hover:bg-indigo-600 text-white px-6 py-2 rounded-full transition-all duration-300"
-                >
-                    {isLoggedIn ? (
-                    <>
-                        <FaSignOutAlt className="inline mr-2" />
-                        Logout
-                    </>
-                    ) : (
-                    <>
-                        <FaSignInAlt className="inline mr-2" />
-                        Login
-                    </>
-                    )}
-                </button>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="flex items-center gap-3 md:hidden">
-                <img onClick={()=> setIsMenuOpen(!isMenuOpen)} src={assets.menuIcon} alt="" className={`${isScrolled && 'invert' } h-4`}/>
-            </div>
-
-            {/* Mobile Menu */}
-            <div className={`fixed top-0 left-0 w-full h-screen bg-white text-base flex flex-col md:hidden items-center justify-center gap-6 font-medium text-gray-800 transition-all duration-500 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-                <button className="absolute top-4 right-4" onClick={() => setIsMenuOpen(false)}>
-                    <img src={assets.closeIcon} alt="close_menu" className="h-6.5"/>
-                </button>
-
-                {navLinks.map((link, i) => (
-                    <a key={i} href={link.path} onClick={() => setIsMenuOpen(false)}>
-                        {link.name}
-                    </a>
-                ))}
-
-                <button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
-                    Dashboard
-                </button>
-
-                <button
-                    onClick={handleAuthClick}
-                    className="flex items-center gap-2 bg-black hover:bg-indigo-600 text-white px-6 py-2 rounded-full transition-all duration-300"
-                >
-                    {isLoggedIn ? (
-                        <>
-                            <FaSignOutAlt className="inline mr-2" />
-                            Log out
-                        </>
-                    ) : (
-                        <>
-                            <FaSignInAlt className="inline mr-2" />
-                            Log in
-                        </>
-                    )}
-                </button>
-                
-            </div>
-        </nav>
-    );
-}
-
-export default Navbar
+export default Navbar;
