@@ -7,7 +7,9 @@ import Unauthorized from "./components/Unauthorized";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ChangePassword from "./components/ChangePassword";
-import HotelsPage from "./pages/HotelsPage";
+import HotelRoomsPage from "./pages/HotelRoomsPage";
+import MyBookingsPage from "./pages/MyBookingsPage";
+import HotelDetailsPage from "./pages/HotelDetailsPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,7 +20,9 @@ const router = createBrowserRouter(
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/" element={<HomePage />} />
-      <Route path="/hotels" element={<HotelsPage />} />
+      <Route path="/rooms" element={<HotelRoomsPage />} />
+      <Route path="/bookings" element={<MyBookingsPage />} />
+      <Route path="/rooms/:hotelId/:roomId" element={<HotelDetailsPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Route>
   )

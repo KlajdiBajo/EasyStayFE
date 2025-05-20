@@ -8,7 +8,7 @@ import { FiUser } from "react-icons/fi";
 const Navbar = () => {
   const publicLinks = [
     { name: "Home", path: "/" },
-    { name: "Hotels", path: "/hotels" },
+    { name: "Hotel Rooms", path: "/rooms" },
   ];
   // Private links for logged-in users
   const privateLinks = [
@@ -62,7 +62,8 @@ const Navbar = () => {
           </NavLink>
         ))}
         {/* Private links if logged in */}
-        {isLoggedIn && auth.user && privateLinks.map((link, i) => (
+        {/* {isLoggedIn && auth.user && privateLinks.map((link, i) => ( */}
+        {privateLinks.map((link, i) => (
           <NavLink
             key={i + publicLinks.length}
             to={link.path}

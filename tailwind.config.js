@@ -7,6 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        playfair: ['"Playfair Display"', 'serif'],
         lora: ['Lora', 'serif'],
         roboto: ['Roboto', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],

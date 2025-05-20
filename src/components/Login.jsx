@@ -13,6 +13,17 @@ function Login() {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
+  const bookNowError = location.state?.bookNowError;
+  const [showBookNowError, setShowBookNowError] = useState(false);
+
+  useEffect(() => {
+    if (bookNowError) {
+      setShowBookNowError(true);
+      const timer = setTimeout(() => setShowBookNowError(false), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [bookNowError]);
+
   const userRef = useRef();
 
   const [user, setUser] = useState("");
@@ -60,6 +71,12 @@ function Login() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-light-gray">
+      {/* POPUP for Book Now error */}
+      {showBookNowError && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg font-medium animate-fade-in">
+          {bookNowError}
+        </div>
+      )}
       <div className="flex items-center justify-center w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-6 bg-white h-full">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-2xl font-bold text-charcoal-gray text-center mb-6 font-lora">

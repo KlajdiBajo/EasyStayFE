@@ -29,6 +29,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [birthdate, setBirthdate] = useState("");
+  const [role, setRole] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,6 +65,7 @@ const Register = () => {
           email,
           gender,
           birthdate,
+          role,
         }),
         {
           headers: { "Content-Type": "application/json" },
@@ -80,10 +83,18 @@ const Register = () => {
       setEmail("");
       setGender("");
       setBirthdate("");
+      setRole("");
 
       setTimeout(() => {
-        navigate("/sign-in");
+        if (role === "USER") {
+          navigate("/");
+        } else if (role === "HOTEL_MANAGER") {
+          navigate("/hotelManager");
+        } else {
+          navigate("/sign-in");
+        }
       }, 1500);
+
     } catch (err) {
       const messageKey = err?.response?.data?.message;
       const toastMessage =
@@ -107,7 +118,7 @@ const Register = () => {
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-light-gray">
       <div className="flex items-center justify-center w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-6 bg-white h-full">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 mt-16">
           <h2 className="text-2xl font-bold text-charcoal-gray text-center mb-6 font-lora">
             Sign Up to <span className="text-teal">EasyStay</span>
           </h2>
@@ -251,6 +262,28 @@ const Register = () => {
               />
             </div>
 
+            <div>
+              <label
+                htmlFor="role"
+                className="block font-medium text-charcoal-gray font-roboto"
+              >
+                Role:
+                {renderValidationIcon(role !== "", role)}
+              </label>
+              <select
+                id="role"
+                value={role}
+                autoComplete="off"
+                onChange={(e) => setRole(e.target.value)}
+                required
+                className="mt-1 block w-full px-4 py-2 bg-light-gray border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal font-roboto"
+              >
+                <option value="">Select Role</option>
+                <option value="USER">User</option>
+                <option value="HOTEL_MANAGER">Hotel Manager</option>
+              </select>
+            </div>
+
             <button
               type="submit"
               disabled={
@@ -259,7 +292,8 @@ const Register = () => {
                 !lastname.trim() ||
                 !email.trim() ||
                 !gender.trim() ||
-                !birthdate.trim()
+                !birthdate.trim() ||
+                !role.trim()
               }
               className="w-full bg-teal text-white py-2 px-4 rounded-2xl font-montserrat font-bold hover:bg-teal-dark transition-colors duration-200 disabled:opacity-50 cursor-pointer shadow-md"
             >
