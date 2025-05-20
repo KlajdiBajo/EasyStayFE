@@ -20,7 +20,14 @@ export const roomsDummyData = [
     owner: {
       name: "Erion Kola",
       image: "https://randomuser.me/api/portraits/men/32.jpg"
-    }
+    },
+    policies: [
+      "Check-in: 2:00 PM",
+      "Check-out: 11:00 AM",
+      "Free cancellation within 48 hours",
+      "No pets allowed",
+      "No smoking in rooms"
+    ]
   },
   {
     _id: "2",
@@ -43,7 +50,14 @@ export const roomsDummyData = [
     owner: {
       name: "Ana Lika",
       image: "https://randomuser.me/api/portraits/women/44.jpg"
-    }
+    },
+    policies: [
+      "Check-in: 1:00 PM",
+      "Check-out: 12:00 PM",
+      "Free breakfast included",
+      "Pets allowed on request",
+      "No smoking in rooms"
+    ]
   },
   {
     _id: "3",
@@ -66,7 +80,14 @@ export const roomsDummyData = [
     owner: {
       name: "Arben Deda",
       image: "https://randomuser.me/api/portraits/men/77.jpg"
-    }
+    },
+    policies: [
+      "Check-in: 3:00 PM",
+      "Check-out: 11:00 AM",
+      "No pets allowed",
+      "Bar open till 12:00 AM",
+      "No smoking in rooms"
+    ]
   },
   {
     _id: "4",
@@ -89,6 +110,13 @@ export const roomsDummyData = [
     owner: {
       name: "Drita Hoxha",
       image: "https://randomuser.me/api/portraits/women/65.jpg"
-    }
+    },
+    policies: [
+      "Check-in: 2:00 PM",
+      "Check-out: 10:00 AM",
+      "Spa access included",
+      "Pets allowed",
+      "No smoking in rooms"
+    ]
   }
 ];

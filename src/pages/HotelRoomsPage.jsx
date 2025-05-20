@@ -23,6 +23,10 @@ const RadioButton = ({label, selected = false, onChange = () => { }}) => (
 const HotelRoomsPage = () => {
   const [openFilters, setOpenFilters] = useState(false);
 
+  const [selectedRoomTypes, setSelectedRoomTypes] = useState([]);
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
+  const [selectedSortOption, setSelectedSortOption] = useState("");
+
   const [bookNowError, setBookNowError] = useState('');
   const [showBookToast, setShowBookToast] = useState(false);
 
@@ -61,6 +65,48 @@ const HotelRoomsPage = () => {
     "Newest First"
   ];
 
+  // FILTER HANDLERS
+  const handleRoomTypeChange = (checked, label) => {
+    setSelectedRoomTypes((prev) =>
+      checked ? [...prev, label] : prev.filter(type => type !== label)
+    );
+  };
+
+  const handlePriceRangeChange = (checked, label) => {
+    setSelectedPriceRanges((prev) =>
+      checked ? [...prev, label] : prev.filter(range => range !== label)
+    );
+  };
+
+  const handleSortOptionChange = (label) => {
+    setSelectedSortOption(label);
+  };
+
+  const filterByRoomType = (room) => 
+    selectedRoomTypes.length === 0 || selectedRoomTypes.includes(room.roomtype);
+
+  const filterByPriceRange = (room) => {
+    if (selectedPriceRanges.length === 0) return true;
+    return selectedPriceRanges.some(range => {
+      const [min, max] = range.replace('$ ', '').split(' to ');
+      return (
+        room.pricePerNight >= Number(min) && room.pricePerNight <= Number(max)
+      );
+    });
+  };
+
+  let filteredRooms = roomsDummyData
+    .filter(filterByRoomType)
+    .filter(filterByPriceRange);
+
+  if (selectedSortOption === "Price Low to High") {
+    filteredRooms = filteredRooms.slice().sort((a, b) => a.pricePerNight - b.pricePerNight);
+  } else if (selectedSortOption === "Price High to Low") {
+    filteredRooms = filteredRooms.slice().sort((a, b) => b.pricePerNight - a.pricePerNight);
+  } else if (selectedSortOption === "Newest First") {
+    filteredRooms = filteredRooms.slice().reverse();
+  }
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -91,13 +137,14 @@ const HotelRoomsPage = () => {
 
       <div>
         <div className='flex flex-col items-start text-left'>
-            <h1 className='font-playfair text-4xl md:text-[40px]'>Hotel Rooms</h1>
-            <p className='text-sm md:text-base text-gray-500/90 mt-2 max-w-174'>
-              Take advantage of our limited-time offers and special packages to enhance your stay and create unforgettable memories.
-            </p>
+          <h1 className='font-playfair text-4xl md:text-[40px]'>Hotel Rooms</h1>
+          <p className='text-sm md:text-base text-gray-500/90 mt-2 max-w-174'>
+            Take advantage of our limited-time offers and special packages to enhance your stay and create unforgettable memories.
+          </p>
         </div>
 
-        {roomsDummyData.map((room) => (
+        {/* Use filteredRooms! */}
+        {filteredRooms.map((room) => (
           <div
             key={room._id}
             className="flex flex-col md:flex-row items-stretch py-10 gap-6 border-b border-gray-300 last:pb-30 last:border-0"
@@ -125,7 +172,7 @@ const HotelRoomsPage = () => {
 
             {/* Right Side Content */}
             <div className="md:w-1/2 w-full flex flex-col justify-between gap-2"
-                style={{ minHeight: 260, height: "100%" }}
+              style={{ minHeight: 260, height: "100%" }}
             >
               <div className="flex-1">
                 <p className="text-gray-500">{room.hotel.city}</p>
@@ -182,7 +229,14 @@ const HotelRoomsPage = () => {
           <p className='text-base font-medium text-gray-800'>FILTERS</p>
           <div className='text-xs cursor-pointer'>
             <span onClick={()=> setOpenFilters(!openFilters)} className='lg:hidden'>{openFilters ? 'HIDE' : 'SHOW'}</span>
-            <span className='hidden lg:block'>CLEAR</span>
+            <span onClick={() => {
+              setSelectedRoomTypes([]);
+              setSelectedPriceRanges([]);
+              setSelectedSortOption("");
+            }}
+            className='hidden lg:block'            >
+              CLEAR
+            </span>
           </div>
         </div>
 
@@ -190,19 +244,34 @@ const HotelRoomsPage = () => {
           <div className='px-5 pt-5'>
             <p className='font-medium text-gray-800 pb-2'>Popular Filters</p>
             {roomTypes.map((room, index)=>(
-              <CheckBox key={index} label={room} />
+              <CheckBox 
+                key={index} 
+                label={room}
+                selected={selectedRoomTypes.includes(room)}
+                onChange={handleRoomTypeChange}
+              />
             ))}
           </div>
           <div className='px-5 pt-5'>
             <p className='font-medium text-gray-800 pb-2'>Price Range</p>
             {priceRanges.map((range, index)=>(
-              <CheckBox key={index} label={`$ ${range}`} />
+              <CheckBox 
+                key={index} 
+                label={`$ ${range}`} 
+                selected={selectedPriceRanges.includes(`$ ${range}`)}
+                onChange={handlePriceRangeChange}
+              />
             ))}
           </div>
           <div className='px-5 pt-5 pb-7'>
             <p className='font-medium text-gray-800 pb-2'>Sort By</p>
             {sortOptions.map((option, index)=>(
-              <RadioButton key={index} label={option} />
+              <RadioButton 
+                key={index} 
+                label={option} 
+                selected={selectedSortOption === option}
+                onChange={handleSortOptionChange}
+              />
             ))}
           </div>
         </div>

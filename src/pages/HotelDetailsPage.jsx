@@ -10,7 +10,6 @@ const HotelDetailsPage = () => {
   const [hotel, setHotel] = useState(null);
   const [mainImage, setMainImage] = useState(null);
 
-  // Map amenity strings to React icon components
   const facilityIcons = {
     "WiFi": FaWifi,
     "Breakfast": FaCoffee,
@@ -40,7 +39,7 @@ const HotelDetailsPage = () => {
     <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32'>
       {/* Hotel Details */}
       <div className='flex flex-col md:flex-row items-start md:items-center gap-2'>
-        <h1 className='text-3xl md:text-4xl font-playfair'>{hotel.hotelName} 
+        <h1 className='text-3xl md:text-4xl font-playfair'>{hotel.hotelName}
           <span className='font-inter text-sm'> ({hotel.roomtype})</span>
         </h1>
       </div>
@@ -59,7 +58,7 @@ const HotelDetailsPage = () => {
       {/* Hotel Images */}
       <div className='flex flex-col lg:flex-row mt-6 gap-6'>
         <div className='lg:w-1/2 w-full'>
-          <img src={mainImage} alt="Hotel Main" 
+          <img src={mainImage} alt="Hotel Main"
             className='w-full rounded-xl shadow-lg object-cover' />
         </div>
         <div className='grid grid-cols-2 gap-4 lg:w-1/2 w-full'>
@@ -100,6 +99,35 @@ const HotelDetailsPage = () => {
         <p>{hotel.description}</p>
       </div>
 
+      {/* All Rooms at This Hotel */}
+      <div className="mt-10">
+        <h2 className="text-2xl font-playfair mb-4">Rooms at {hotel.hotelName}</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {roomsDummyData
+            .filter(r => r.hotelId === hotel.hotelId)
+            .map(room => (
+              <div key={room._id} className="border rounded-lg p-4 bg-white shadow">
+                <img src={room.images[0]} alt={room.roomtype} className="h-40 w-full object-cover rounded" />
+                <div className="mt-2 flex justify-between items-center">
+                  <span className="font-semibold">{room.roomtype}</span>
+                  <span className="text-blue-600 font-bold">${room.pricePerNight}/night</span>
+                </div>
+                <div className="mt-2 text-xs text-gray-500">{room.description}</div>
+              </div>
+            ))}
+        </div>
+      </div>
+
+      {/* Hotel Policies */}
+      <div className="mt-10">
+        <h2 className="text-2xl font-playfair mb-4">Hotel Policies</h2>
+        <ul className="list-disc pl-6 text-gray-700 space-y-1">
+          {hotel.policies && hotel.policies.map((policy, idx) => (
+            <li key={idx}>{policy}</li>
+          ))}
+        </ul>
+      </div>
+
       {/* Hotel Owner */}
       <div className='flex flex-col items-start gap-4 mt-8'>
         <div className='flex gap-4 items-center'>
@@ -111,14 +139,14 @@ const HotelDetailsPage = () => {
             </div>
           </div>
         </div>
-            <button
-                className='px-6 py-2.5 mt-4 rounded text-white bg-blue-600 hover:bg-blue-700 transition-all cursor-pointer'
-            >
-                Contact Now
-            </button>
+        <button
+          className='px-6 py-2.5 mt-4 rounded text-white bg-blue-600 hover:bg-blue-700 transition-all cursor-pointer'
+        >
+          Contact Now
+        </button>
       </div>
     </div>
   );
 }
 
-export default HotelDetailsPage
+export default HotelDetailsPage;
