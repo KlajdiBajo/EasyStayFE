@@ -6,6 +6,8 @@ import { FaWifi, FaCoffee, FaSwimmer, FaCar, FaUtensils, FaFan, FaBed, FaWineBot
 import StarRating from '../components/StarRating';
 import useAuth from "../hooks/useAuth";
 
+import { useBookings } from '../context/BookingsContext';
+
 const CheckBox = ({label, selected = false, onChange = () => { }}) => (
   <label className='flex gap-3 items-center cursor-pointer mt-2 text-sm'>
     <input type="checkbox" checked={selected} onChange={(e) => onChange(e.target.checked, label)}/>
@@ -22,13 +24,19 @@ const RadioButton = ({label, selected = false, onChange = () => { }}) => (
 
 const HotelRoomsPage = () => {
   const [openFilters, setOpenFilters] = useState(false);
-
   const [selectedRoomTypes, setSelectedRoomTypes] = useState([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
   const [selectedSortOption, setSelectedSortOption] = useState("");
-
   const [bookNowError, setBookNowError] = useState('');
   const [showBookToast, setShowBookToast] = useState(false);
+
+  // ===== Booking Popup State =====
+  const [showBookPopup, setShowBookPopup] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [checkInDate, setCheckInDate] = useState('');
+  const [checkOutDate, setCheckOutDate] = useState('');
+  const { bookings, setBookings } = useBookings();
+  const [bookingSuccess, setBookingSuccess] = useState(false);
 
   const { auth } = useAuth();
   const isLoggedIn = !!auth?.accessToken;
@@ -110,14 +118,38 @@ const HotelRoomsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Show Book Now Popup
   const handleBookNow = (roomId) => {
     if (!isLoggedIn) {
       navigate("/sign-in", {
         state: { from: location, bookNowError: "You need to login to book a room." }
       });
     } else {
-      navigate(`/rooms/hotels`);
+      const room = roomsDummyData.find(r => r._id === roomId);
+      setSelectedRoom(room);
+      setShowBookPopup(true);
+      setCheckInDate('');
+      setCheckOutDate('');
     }
+  };
+
+  // Confirm Booking
+  const handleConfirmBooking = () => {
+    if (!checkInDate || !checkOutDate) return;
+    const newBooking = {
+      _id: Date.now().toString(),
+      hotel: selectedRoom.hotel,
+      room: selectedRoom,
+      guests: 2, // Or get from input
+      checkInDate,
+      checkOutDate,
+      totalPrice: selectedRoom.pricePerNight,
+      isCanceled: false
+    };
+    setBookings(prev => [...prev, newBooking]);
+    setShowBookPopup(false);
+    setBookingSuccess(true);
+    setTimeout(() => setBookingSuccess(false), 2200);
   };
 
   useEffect(() => {
@@ -135,6 +167,57 @@ const HotelRoomsPage = () => {
         </div>
       )}
 
+      {bookingSuccess && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg font-medium animate-fade-in">
+          Booking successful!
+        </div>
+      )}
+
+      {/* Book Now Popup */}
+      {showBookPopup && selectedRoom && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-lg shadow-lg px-8 py-6 max-w-sm w-full text-center">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Book This Room?</h2>
+            <div className='flex flex-col gap-4 mb-4'>
+              <div>
+                <label className='block text-sm mb-1'>Check-in Date</label>
+                <input
+                  type="date"
+                  value={checkInDate}
+                  onChange={e => setCheckInDate(e.target.value)}
+                  className="border rounded px-3 py-2 w-full"
+                />
+              </div>
+              <div>
+                <label className='block text-sm mb-1'>Check-out Date</label>
+                <input
+                  type="date"
+                  value={checkOutDate}
+                  min={checkInDate}
+                  onChange={e => setCheckOutDate(e.target.value)}
+                  className="border rounded px-3 py-2 w-full"
+                />
+              </div>
+            </div>
+            <div className="flex gap-4 justify-center">
+              <button
+                disabled={!checkInDate || !checkOutDate}
+                className="px-4 py-2 bg-[#49B9FF] hover:bg-[#2399e5] text-white rounded transition font-semibold"
+                onClick={handleConfirmBooking}
+              >
+                Yes, Book
+              </button>
+              <button
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded transition font-semibold"
+                onClick={() => setShowBookPopup(false)}
+              >
+                No, Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <div className='flex flex-col items-start text-left'>
           <h1 className='font-playfair text-4xl md:text-[40px]'>Hotel Rooms</h1>
@@ -142,15 +225,12 @@ const HotelRoomsPage = () => {
             Take advantage of our limited-time offers and special packages to enhance your stay and create unforgettable memories.
           </p>
         </div>
-
-        {/* Use filteredRooms! */}
         {filteredRooms.map((room) => (
           <div
             key={room._id}
             className="flex flex-col md:flex-row items-stretch py-10 gap-6 border-b border-gray-300 last:pb-30 last:border-0"
             style={{ minHeight: 340 }}
           >
-            {/* Image Side */}
             <div className="md:w-1/2 w-full flex">
               <img
                 onClick={() => {
@@ -169,8 +249,6 @@ const HotelRoomsPage = () => {
                 }}
               />
             </div>
-
-            {/* Right Side Content */}
             <div className="md:w-1/2 w-full flex flex-col justify-between gap-2"
               style={{ minHeight: 260, height: "100%" }}
             >
@@ -239,7 +317,6 @@ const HotelRoomsPage = () => {
             </span>
           </div>
         </div>
-
         <div className={`${openFilters ? 'h-auto' : 'h-0 lg:h-auto'} overflow-hidden transition-all duration-700`}>
           <div className='px-5 pt-5'>
             <p className='font-medium text-gray-800 pb-2'>Popular Filters</p>
@@ -275,7 +352,6 @@ const HotelRoomsPage = () => {
             ))}
           </div>
         </div>
-
       </div>
     </div>
   )

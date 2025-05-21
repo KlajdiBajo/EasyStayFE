@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import {
   faCheck,
   faTimes,
@@ -11,6 +11,7 @@ import EasyStayImage from "../assets/images/EasyStay.png";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ERROR_MESSAGES from "../constants/ErrorMessages.js";
+import AuthContext from "../context/AuthProvider";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const REGISTER_URL = "/auth/signup";
@@ -73,6 +74,10 @@ const Register = () => {
         }
       );
 
+      // ADD THIS BLOCK BELOW
+      setAuth({ username: user, role });           // <-- Sets in AuthContext
+      localStorage.setItem("role", role);         // <-- Stores in localStorage
+
       toast.success(
         "Sign-up successful! Check your email for your temporary password to sign in."
       );
@@ -89,6 +94,7 @@ const Register = () => {
         if (role === "USER") {
           navigate("/");
         } else if (role === "HOTEL_MANAGER") {
+          localStorage.setItem("showHotelRegistration", "true"); // <-- Add popup flag
           navigate("/hotelManager");
         } else {
           navigate("/sign-in");
@@ -325,3 +331,5 @@ const Register = () => {
 };
 
 export default Register;
+
+

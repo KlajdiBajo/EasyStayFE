@@ -11,6 +11,8 @@ export default {
         lora: ['Lora', 'serif'],
         roboto: ['Roboto', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
+        medium: ['Inter', 'sans-serif'],  
         sans: ['Roboto', 'sans-serif'],
       },
       colors: {

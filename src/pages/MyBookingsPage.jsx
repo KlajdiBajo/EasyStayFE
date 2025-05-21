@@ -3,10 +3,11 @@ import Title from '../components/Title';
 import { userBookingsDummyData } from '../userBookingsDummyData';
 import { FiMapPin, FiUser } from 'react-icons/fi';
 
+import { useBookings } from '../context/BookingsContext';
+
+
 const MyBookingsPage = () => {
-  const [bookings, setBookings] = useState(
-    userBookingsDummyData.map(b => ({ ...b, isCanceled: b.isCanceled || false }))
-  );
+  const { bookings, setBookings } = useBookings();
   const [cancelSuccess, setCancelSuccess] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState(null);

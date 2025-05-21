@@ -5,15 +5,14 @@ import useAuth from "../hooks/useAuth.jsx";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 
-const Navbar = () => {
+const Navbar = ({onRegisterClick}) => {
   const publicLinks = [
     { name: "Home", path: "/" },
     { name: "Hotel Rooms", path: "/rooms" },
   ];
-  // Private links for logged-in users
+
   const privateLinks = [
     { name: "My Bookings", path: "/bookings" },
-    { name: "Report", path: "/report" },
   ];
 
   const { auth, setAuth } = useAuth();
@@ -79,6 +78,15 @@ const Navbar = () => {
       <div className="min-w-[170px] flex justify-end">
         {isLoggedIn && auth.user ? (
           <div className="flex items-center gap-2">
+            {/* {auth.user.image ? (
+              <img
+                src={auth.user.image}
+                alt="profile"
+                className="h-8 w-8 rounded-full object-cover border-2 border-gray-300"
+              />
+            ) : (
+              <FiUser className={`h-6 w-6 ${isHome ? "text-white" : "text-gray-700"}`} />
+            )} */}
             <FiUser className={`h-6 w-6 ${isHome ? "text-white" : "text-gray-700"}`} />
             <span className={`font-semibold ${isHome ? "text-white" : "text-gray-800"}`}>
               {auth.user.username}

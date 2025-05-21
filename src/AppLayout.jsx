@@ -1,25 +1,49 @@
-import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import { useEffect, useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import HotelRegistration from "./components/HotelRegistration";
+import AuthContext from "./context/AuthProvider";
+import { Outlet } from "react-router-dom";
 
 const AppLayout = () => {
+  const [showHotelRegistration, setShowHotelRegistration] = useState(false);
+  const { auth } = useContext(AuthContext);
   const location = useLocation();
-  const isHotelManager = location.pathname.includes("hotelManager");
+
+  useEffect(() => {
+    if (
+      auth?.role === "HOTEL_MANAGER" &&
+      window.location.pathname.startsWith("/hotelManager") &&
+      localStorage.getItem("showHotelRegistration") === "true"
+    ) {
+      setShowHotelRegistration(true);
+    }
+  }, [auth]);
+
+  const handleCloseRegistration = () => {
+    setShowHotelRegistration(false);
+    localStorage.removeItem("showHotelRegistration");
+  };
+
+  const isHotelManager = location.pathname.startsWith("/hotelManager");
   const isLoginPage = location.pathname === "/sign-in";
   const isSignUpPage = location.pathname === "/sign-up";
   const isForgotPassword = location.pathname === "/forgot-password";
   const isHome = location.pathname === "/";
 
   const hideNavbar = isHotelManager || isLoginPage || isSignUpPage || isForgotPassword;
-  
+
   return (
     <div>
-      {!hideNavbar && <Navbar isHome={isHome}/>}
-      <div className='min-h-[70vh]'>
+      {!hideNavbar && !showHotelRegistration && <Navbar isHome={isHome} />}
+      <div className="min-h-[70vh]">
         <Outlet />
       </div>
+      {showHotelRegistration && (
+        <HotelRegistration onClose={handleCloseRegistration} />
+      )}
     </div>
   );
 };
 
-export default AppLayout
+export default AppLayout;
