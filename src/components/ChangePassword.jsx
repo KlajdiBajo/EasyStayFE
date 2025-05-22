@@ -8,6 +8,7 @@ import {
   faTimes,
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import useAuth from "../hooks/useAuth";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const CHANGE_PASSWORD_URL = "/user/changePassw";
@@ -24,6 +25,9 @@ const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
+
+  const { auth } = useAuth();
+  const { role } = auth;
 
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(newPassword));
@@ -47,7 +51,15 @@ const ChangePassword = () => {
         }
       );
       toast.success("Password changed successfully!");
-      setTimeout(() => navigate("/"), 2000);
+
+      setTimeout(() => {
+        if (role === "USER") {
+          navigate("/");
+        } else if (role === "MANAGER") {
+          localStorage.setItem("showHotelRegistration", "true");
+          navigate("/hotelManager");
+        }
+      }, 2000);
     } catch (err) {
       toast.error("Failed to change password.");
     } finally {

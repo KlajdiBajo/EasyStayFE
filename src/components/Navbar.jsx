@@ -5,15 +5,13 @@ import useAuth from "../hooks/useAuth.jsx";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 
-const Navbar = ({onRegisterClick}) => {
+const Navbar = () => {
   const publicLinks = [
     { name: "Home", path: "/" },
     { name: "Hotel Rooms", path: "/rooms" },
   ];
 
-  const privateLinks = [
-    { name: "My Bookings", path: "/bookings" },
-  ];
+  const privateLinks = [{ name: "My Bookings", path: "/bookings" }];
 
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
@@ -42,7 +40,11 @@ const Navbar = ({onRegisterClick}) => {
       {/* Logo & Brand */}
       <Link to="/" className="flex items-center gap-3 min-w-[170px]">
         <img src={assets.logo} alt="logo" className="h-9" />
-        <span className={`font-bold text-2xl tracking-tight ${isHome ? "text-white" : "text-gray-900"}`}>
+        <span
+          className={`font-bold text-2xl tracking-tight ${
+            isHome ? "text-white" : "text-gray-900"
+          }`}
+        >
           EasyStay
         </span>
       </Link>
@@ -54,41 +56,51 @@ const Navbar = ({onRegisterClick}) => {
           <NavLink
             key={i}
             to={link.path}
-            className={`group flex flex-col gap-0.5 ${isHome ? "text-white" : "text-gray-700"}`}
+            className={`group flex flex-col gap-0.5 ${
+              isHome ? "text-white" : "text-gray-700"
+            }`}
           >
             {link.name}
-            <div className={`${isHome ? "bg-white" : "bg-gray-700"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} />
+            <div
+              className={`${
+                isHome ? "bg-white" : "bg-gray-700"
+              } h-0.5 w-0 group-hover:w-full transition-all duration-300`}
+            />
           </NavLink>
         ))}
         {/* Private links if logged in */}
-        {/* {isLoggedIn && auth.user && privateLinks.map((link, i) => ( */}
-        {privateLinks.map((link, i) => (
-          <NavLink
-            key={i + publicLinks.length}
-            to={link.path}
-            className={`group flex flex-col gap-0.5 ${isHome ? "text-white" : "text-gray-700"}`}
-          >
-            {link.name}
-            <div className={`${isHome ? "bg-white" : "bg-gray-700"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} />
-          </NavLink>
-        ))}
+        {isLoggedIn &&
+          auth.user &&
+          privateLinks.map((link, i) => (
+            <NavLink
+              key={i + publicLinks.length}
+              to={link.path}
+              className={`group flex flex-col gap-0.5 ${
+                isHome ? "text-white" : "text-gray-700"
+              }`}
+            >
+              {link.name}
+              <div
+                className={`${
+                  isHome ? "bg-white" : "bg-gray-700"
+                } h-0.5 w-0 group-hover:w-full transition-all duration-300`}
+              />
+            </NavLink>
+          ))}
       </div>
 
       {/* Right Side: Login/Profile */}
       <div className="min-w-[170px] flex justify-end">
         {isLoggedIn && auth.user ? (
           <div className="flex items-center gap-2">
-            {/* {auth.user.image ? (
-              <img
-                src={auth.user.image}
-                alt="profile"
-                className="h-8 w-8 rounded-full object-cover border-2 border-gray-300"
-              />
-            ) : (
-              <FiUser className={`h-6 w-6 ${isHome ? "text-white" : "text-gray-700"}`} />
-            )} */}
-            <FiUser className={`h-6 w-6 ${isHome ? "text-white" : "text-gray-700"}`} />
-            <span className={`font-semibold ${isHome ? "text-white" : "text-gray-800"}`}>
+            <FiUser
+              className={`h-6 w-6 ${isHome ? "text-white" : "text-gray-700"}`}
+            />
+            <span
+              className={`font-semibold ${
+                isHome ? "text-white" : "text-gray-800"
+              }`}
+            >
               {auth.user.username}
             </span>
             <button

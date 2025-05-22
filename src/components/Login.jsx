@@ -11,7 +11,6 @@ const LOGIN_URL = "/auth/login";
 function Login() {
   const { setAuth } = useAuth();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
 
   const bookNowError = location.state?.bookNowError;
   const [showBookNowError, setShowBookNowError] = useState(false);
@@ -58,9 +57,13 @@ function Login() {
       if (!passwordChanged) {
         navigate("/change-password");
         return;
+      } else {
+        if (role === "USER") {
+          navigate("/");
+        } else if (role === "MANAGER") {
+          navigate("/hotelManager");
+        }
       }
-
-      navigate(from, { replace: true });
     } catch (err) {
       const messageKey = err?.response?.data?.message;
       const toastMessage =
@@ -71,7 +74,6 @@ function Login() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-light-gray">
-      {/* POPUP for Book Now error */}
       {showBookNowError && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg font-medium animate-fade-in">
           {bookNowError}

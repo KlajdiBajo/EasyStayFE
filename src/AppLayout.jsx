@@ -12,7 +12,7 @@ const AppLayout = () => {
 
   useEffect(() => {
     if (
-      auth?.role === "HOTEL_MANAGER" &&
+      auth?.role === "MANAGER" &&
       window.location.pathname.startsWith("/hotelManager") &&
       localStorage.getItem("showHotelRegistration") === "true"
     ) {
@@ -31,7 +31,8 @@ const AppLayout = () => {
   const isForgotPassword = location.pathname === "/forgot-password";
   const isHome = location.pathname === "/";
 
-  const hideNavbar = isHotelManager || isLoginPage || isSignUpPage || isForgotPassword;
+  const hideNavbar =
+    isHotelManager || isLoginPage || isSignUpPage || isForgotPassword;
 
   return (
     <div>

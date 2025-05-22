@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   faCheck,
   faTimes,
@@ -74,10 +74,6 @@ const Register = () => {
         }
       );
 
-      // ADD THIS BLOCK BELOW
-      setAuth({ username: user, role });           // <-- Sets in AuthContext
-      localStorage.setItem("role", role);         // <-- Stores in localStorage
-
       toast.success(
         "Sign-up successful! Check your email for your temporary password to sign in."
       );
@@ -91,16 +87,8 @@ const Register = () => {
       setRole("");
 
       setTimeout(() => {
-        if (role === "USER") {
-          navigate("/");
-        } else if (role === "HOTEL_MANAGER") {
-          localStorage.setItem("showHotelRegistration", "true"); // <-- Add popup flag
-          navigate("/hotelManager");
-        } else {
-          navigate("/sign-in");
-        }
+        navigate("/sign-in");
       }, 1500);
-
     } catch (err) {
       const messageKey = err?.response?.data?.message;
       const toastMessage =
@@ -156,7 +144,9 @@ const Register = () => {
               />
               <p
                 id="uidnote"
-                className={`mt-2 text-sm rounded-md p-3 bg-black text-white shadow-md font-roboto ${userFocus && user && !validName ? "block" : "hidden"}`}
+                className={`mt-2 text-sm rounded-md p-3 bg-black text-white shadow-md font-roboto ${
+                  userFocus && user && !validName ? "block" : "hidden"
+                }`}
               >
                 <FontAwesomeIcon icon={faInfoCircle} className="mr-1" />
                 4 to 24 characters.
@@ -286,7 +276,7 @@ const Register = () => {
               >
                 <option value="">Select Role</option>
                 <option value="USER">User</option>
-                <option value="HOTEL_MANAGER">Hotel Manager</option>
+                <option value="MANAGER">Hotel Manager</option>
               </select>
             </div>
 
@@ -331,5 +321,3 @@ const Register = () => {
 };
 
 export default Register;
-
-

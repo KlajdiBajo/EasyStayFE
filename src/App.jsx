@@ -1,4 +1,9 @@
-import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+  Route,
+} from "react-router-dom";
 import AppLayout from "./AppLayout";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
@@ -15,15 +20,23 @@ import Dashboard from "./pages/hotelManager/Dashboard";
 import AddRoom from "./pages/hotelManager/AddRoom";
 import ListRooms from "./pages/hotelManager/ListRooms";
 import RequireRole from "./components/RequireRole"; // <--- This is your role-based guard
-
-import { BookingsProvider } from './context/BookingsContext';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { BookingsProvider } from "./context/BookingContext";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<AppLayout />}>
       {/* Public routes */}
       <Route path="/" element={<HomePage />} />
-      <Route path="/rooms" element={<HotelRoomsPage />} />
+      <Route
+        path="/rooms"
+        element={
+          <BookingsProvider>
+            <HotelRoomsPage />
+          </BookingsProvider>
+        }
+      />
       <Route path="/rooms/:hotelId/:roomId" element={<HotelDetailsPage />} />
       <Route path="/sign-up" element={<RegisterPage />} />
       <Route path="/sign-in" element={<LoginPage />} />
@@ -48,7 +61,7 @@ const router = createBrowserRouter(
       <Route
         path="/hotelManager"
         element={
-          <RequireRole role="HOTEL_MANAGER">
+          <RequireRole role="MANAGER">
             <Layout />
           </RequireRole>
         }

@@ -1,152 +1,177 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { roomsDummyData } from '../roomsDummyData';
-import StarRating from '../components/StarRating';
-import { FiMapPin } from 'react-icons/fi';
-import { FaWifi, FaCoffee, FaSwimmer, FaCar, FaUtensils, FaFan, FaBed, FaWineBottle, FaSpa, FaTv } from 'react-icons/fa';
+// src/pages/HotelDetailsPage.jsx
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useParams } from "react-router-dom";
+import axios from "../api/axios";
+import { FiMapPin } from "react-icons/fi";
+import {
+  FaWifi,
+  FaCoffee,
+  FaSwimmer,
+  FaConciergeBell,
+  FaMountain,
+  FaBed,
+} from "react-icons/fa";
 
-const HotelDetailsPage = () => {
+// Mapping of facility keys → icon components
+const FACILITY_ICONS = {
+  FREE_WIFI: FaWifi,
+  FREE_BREAKFAST: FaCoffee,
+  ROOM_SERVICE: FaConciergeBell,
+  MOUNTAIN_VIEW: FaMountain,
+  POOL_ACCESS: FaSwimmer,
+};
+
+// Human-friendly room type labels
+const ROOM_TYPE_LABELS = {
+  FAMILY_SUITE: "Family Suite",
+  LUXURY_ROOM: "Luxury Room",
+  DOUBLE_BED: "Double Bed",
+  SINGLE_BED: "Single Bed",
+};
+
+export default function HotelDetailsPage() {
   const { hotelId, roomId } = useParams();
   const [hotel, setHotel] = useState(null);
-  const [mainImage, setMainImage] = useState(null);
+  const [room, setRoom] = useState(null);
+  const [images, setImages] = useState([]);
+  const [mainImage, setMainImage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const facilityIcons = {
-    "WiFi": FaWifi,
-    "Breakfast": FaCoffee,
-    "Air Conditioning": FaFan,
-    "Bed": FaBed,
-    "Pool": FaSwimmer,
-    "Sea View": FaUtensils,
-    "Parking": FaCar,
-    "Bar": FaWineBottle,
-    "Spa": FaSpa,
-    "TV": FaTv,
-  };
+  const humanRoomType = useMemo(
+    () => ROOM_TYPE_LABELS[room?.type] || room?.type.replaceAll("_", " "),
+    [room]
+  );
 
-  useEffect(() => {
-    const room = roomsDummyData.find(
-      r => r.hotelId === hotelId && r._id === roomId
-    );
-    if (room) {
-      setHotel(room);
-      setMainImage(room.images[0]);
+  const gridColsClass = useMemo(() => {
+    if (images.length <= 1) return "grid-cols-1";
+    if (images.length === 2) return "grid-cols-2";
+    if (images.length === 3) return "grid-cols-3";
+    return "grid-cols-4";
+  }, [images]);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const [hRes, rRes, pRes] = await Promise.all([
+        axios.get("/hotel/getById", { params: { hotelId } }),
+        axios.get("/room/getById", { params: { roomId } }),
+        axios.get("/photo/getPhoto", {
+          params: { type: "ROOM", referenceId: roomId },
+        }),
+      ]);
+
+      setHotel(hRes.data);
+      setRoom(rRes.data);
+
+      const raw = pRes.data;
+      const arr = Array.isArray(raw) ? raw : raw ? [raw] : [];
+      const urls = arr.map(({ url }) => url);
+      setImages(urls);
+      setMainImage(urls[0] ?? "/images/no-photo-available.png");
+    } catch (e) {
+      console.error(e);
+      setError("Failed to load hotel details. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }, [hotelId, roomId]);
 
-  if (!hotel) return null;
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  if (loading) {
+    return <p className="p-8 text-center text-gray-600">Loading…</p>;
+  }
+  if (error) {
+    return <p className="p-8 text-center text-red-500">{error}</p>;
+  }
 
   return (
-    <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32'>
-      {/* Hotel Details */}
-      <div className='flex flex-col md:flex-row items-start md:items-center gap-2'>
-        <h1 className='text-3xl md:text-4xl font-playfair'>{hotel.hotelName}
-          <span className='font-inter text-sm'> ({hotel.roomtype})</span>
-        </h1>
-      </div>
+    <article className="py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32">
+      {/* Hotel Name */}
+      <header className="mb-6">
+        <h1 className="text-3xl md:text-4xl font-playfair">{hotel.name}</h1>
+        <h2 className="text-xl text-gray-600 mt-1">{humanRoomType}</h2>
+      </header>
 
-      {/* Hotel Rating */}
-      <div className='flex items-center gap-1 mt-2'>
-        <StarRating />
-      </div>
-
-      {/* Hotel Address */}
-      <div className='flex items-center gap-1 text-gray-500 mt-2'>
+      {/* Location */}
+      <div className="flex items-center gap-2 text-gray-500 mb-10">
         <FiMapPin />
-        <span>{hotel.address}</span>
+        <address className="not-italic">
+          {hotel.roadName}, {hotel.city}, {hotel.country}
+        </address>
       </div>
 
-      {/* Hotel Images */}
-      <div className='flex flex-col lg:flex-row mt-6 gap-6'>
-        <div className='lg:w-1/2 w-full'>
-          <img src={mainImage} alt="Hotel Main"
-            className='w-full rounded-xl shadow-lg object-cover' />
+      {/* Image Gallery */}
+      <section className="flex flex-col lg:flex-row gap-6 mb-10">
+        <div className="lg:w-1/2 w-full">
+          <img
+            src={mainImage}
+            alt="Main room view"
+            className="w-full rounded-xl shadow-lg object-cover"
+          />
         </div>
-        <div className='grid grid-cols-2 gap-4 lg:w-1/2 w-full'>
-          {hotel.images.length > 1 && hotel.images.map((image, index) => (
-            <img
-              onClick={() => setMainImage(image)}
-              key={index}
-              src={image}
-              alt='Room'
-              className={`w-full rounded-xl shadow-md object-cover cursor-pointer ${mainImage === image ? 'outline outline-3 outline-orange-500' : ''}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Hotel Highlights */}
-      <div className='flex flex-col md:flex-row md:justify-between mt-10'>
-        <div className='flex flex-col'>
-          <h1 className='text-3xl md:text-4xl font-playfair'>Experience Luxury Like Never Before</h1>
-          <div className='flex flex-wrap items-center mt-3 mb-6 gap-4'>
-            {hotel.amenities.map((item, index) => {
-              const Icon = facilityIcons[item];
-              return (
-                <div key={index} className='flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100'>
-                  {Icon && <Icon className='w-5 h-5' />}
-                  <p className='text-xs'>{item}</p>
-                </div>
-              );
-            })}
-          </div>
-          {/* Hotel Price */}
-          <p className='text-2xl font-medium'>${hotel.pricePerNight} <span className='text-base font-normal'>/night</span></p>
-        </div>
-      </div>
-
-      {/* Hotel Description */}
-      <div className='max-w-3xl border-y border-gray-300 my-15 py-10 text-gray-500 mt-10'>
-        <p>{hotel.description}</p>
-      </div>
-
-      {/* All Rooms at This Hotel */}
-      <div className="mt-10">
-        <h2 className="text-2xl font-playfair mb-4">Rooms at {hotel.hotelName}</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {roomsDummyData
-            .filter(r => r.hotelId === hotel.hotelId)
-            .map(room => (
-              <div key={room._id} className="border rounded-lg p-4 bg-white shadow">
-                <img src={room.images[0]} alt={room.roomtype} className="h-40 w-full object-cover rounded" />
-                <div className="mt-2 flex justify-between items-center">
-                  <span className="font-semibold">{room.roomtype}</span>
-                  <span className="text-blue-600 font-bold">${room.pricePerNight}/night</span>
-                </div>
-                <div className="mt-2 text-xs text-gray-500">{room.description}</div>
-              </div>
-            ))}
-        </div>
-      </div>
-
-      {/* Hotel Policies */}
-      <div className="mt-10">
-        <h2 className="text-2xl font-playfair mb-4">Hotel Policies</h2>
-        <ul className="list-disc pl-6 text-gray-700 space-y-1">
-          {hotel.policies && hotel.policies.map((policy, idx) => (
-            <li key={idx}>{policy}</li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Hotel Owner */}
-      <div className='flex flex-col items-start gap-4 mt-8'>
-        <div className='flex gap-4 items-center'>
-          <img src={hotel.owner.image} alt="Host" className='h-14 w-14 md:h-18 md:w-18 rounded-full' />
-          <div>
-            <p className='text-lg md:text-xl'>Hosted By: {hotel.owner.name}</p>
-            <div className='flex items-center mt-1'>
-              <StarRating />
+        <div className={`grid gap-4 w-full ${gridColsClass}`}>
+          {images.length > 0 ? (
+            images.map((src, idx) => (
+              <img
+                key={idx}
+                src={src}
+                alt={`Thumbnail ${idx + 1}`}
+                onClick={() => setMainImage(src)}
+                className={`w-full rounded-xl shadow-md object-cover cursor-pointer ${
+                  mainImage === src
+                    ? "outline-3 outline-orange-500 outline"
+                    : ""
+                }`}
+              />
+            ))
+          ) : (
+            <div className="w-full h-48 bg-gray-100 rounded-xl flex items-center justify-center">
+              <span className="text-gray-400">No photos available</span>
             </div>
-          </div>
+          )}
         </div>
-        <button
-          className='px-6 py-2.5 mt-4 rounded text-white bg-blue-600 hover:bg-blue-700 transition-all cursor-pointer'
-        >
-          Contact Now
-        </button>
-      </div>
-    </div>
+      </section>
+
+      {/* Amenities */}
+      <section className="flex flex-wrap gap-4 mb-6">
+        {room.amenities.map((amenity, idx) => {
+          const Icon = FACILITY_ICONS[amenity];
+          const label = amenity.replaceAll("_", " ");
+          return (
+            <div
+              key={idx}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100"
+            >
+              {Icon && <Icon className="w-5 h-5 text-gray-600" />}
+              <span className="text-xs text-gray-700">{label}</span>
+            </div>
+          );
+        })}
+      </section>
+
+      {/* Guest Count & Pricing */}
+      <section className="flex items-center gap-6 mb-10">
+        <div className="flex items-center gap-2 text-gray-600">
+          <FaBed className="w-5 h-5" />
+          <span className="text-sm">
+            {room.maxGuests} guest{room.maxGuests > 1 ? "s" : ""}
+          </span>
+        </div>
+        <p className="text-2xl font-medium">
+          ${room.pricePerNight}{" "}
+          <span className="text-base font-normal">/ night</span>
+        </p>
+      </section>
+
+      {/* Description */}
+      <section className="max-w-3xl border-t border-b border-gray-300 py-10 text-gray-500">
+        <p>{hotel.description}</p>
+      </section>
+    </article>
   );
 }
-
-export default HotelDetailsPage;

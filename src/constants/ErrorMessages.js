@@ -1,4 +1,3 @@
-
 const ERROR_MESSAGES = {
     userNotFound:
         "Invalid username or password. Please check your credentials.",
@@ -9,7 +8,18 @@ const ERROR_MESSAGES = {
 
     unexpectedErrorOccurred: "Unexpected error occurred. Try again later.",
     usernameExists: "Username is already taken.",
-    emailExists: "Email already taken."
+    emailExists: "Email already taken.",
+    cantRegisterMoreThanOneHotel: "Hotel Manager can not register more than one Hotel.",
+    invalidRoomId:
+        "The selected room does not exist. Please choose a valid room.",
+    roomIsNotAvailable:
+        "This room is not available for the selected dates. Please choose different dates or another room.",
+    invalidReservationPeriod:
+        "Invalid reservation period. Check-out date must be after check-in date.",
+    bookingNotFound: "Booking not found. Please verify your reservation details.",
+    managersCanCancelOnlyDuringReservationPeriod: "Managers can only cancel within the reservation period.",
+    cancelingAfterReservationStartDateIsForbidden: "You cannot cancel after the reservation start date.",
+    roomDoesntExist: "The selected room does not exist. Please choose a valid room.",
 };
 
 export default ERROR_MESSAGES;
