@@ -6,6 +6,8 @@ import RoomCard from "../components/RoomCard";
 import BookingModal from "../components/BookingModal";
 import useAuth from "../hooks/useAuth";
 import ERROR_MESSAGES from "../constants/ErrorMessages.js";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DEFAULT_PAGE_SIZE = 5;
 
@@ -145,64 +147,67 @@ export default function HotelRoomsPage() {
   };
 
   return (
-    <div className="pt-28 px-4 md:px-16 lg:px-24 xl:px-32">
-      {/* Login Toast */}
-      {showBookToast && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg">
-          You need to login to book a room.
-        </div>
-      )}
+    <>
+      <div className="pt-28 px-4 md:px-16 lg:px-24 xl:px-32">
+        {/* Login Toast */}
+        {showBookToast && (
+          <div className="fixed top-6 left-1/2 -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg">
+            You need to login to book a room.
+          </div>
+        )}
 
-      {showBookPopup && selectedRoom && (
-        <BookingModal
-          room={selectedRoom}
-          checkInDate={checkInDate}
-          setCheckInDate={setCheckInDate}
-          checkOutDate={checkOutDate}
-          setCheckOutDate={setCheckOutDate}
-          setShow={setShowBookPopup}
-        />
-      )}
-
-      {/* Header */}
-      <h1 className="font-playfair text-4xl mb-4">Hotel Rooms</h1>
-
-      {/* Empty/Loading */}
-      {loading && rooms.length === 0 && <p>Loading rooms…</p>}
-      {!loading && rooms.length === 0 && (
-        <p className="text-center text-gray-500">
-          No rooms found for your criteria.
-        </p>
-      )}
-
-      {/* Room List */}
-      <div className="space-y-10">
-        {rooms.map((r) => (
-          <RoomCard
-            key={r.roomId}
-            room={r}
-            imageUrl={roomImages[r.roomId]}
-            onView={() => {
-              navigate(`/rooms/${r.hotelId}/${r.roomId}`);
-              window.scrollTo(0, 0);
-            }}
-            onBook={() => handleBookNow(r.roomId)}
+        {showBookPopup && selectedRoom && (
+          <BookingModal
+            room={selectedRoom}
+            checkInDate={checkInDate}
+            setCheckInDate={setCheckInDate}
+            checkOutDate={checkOutDate}
+            setCheckOutDate={setCheckOutDate}
+            setShow={setShowBookPopup}
           />
-        ))}
-      </div>
+        )}
 
-      {/* Load More */}
-      {hasMore && rooms.length > 0 && (
-        <div className="flex justify-center my-8">
-          <button
-            onClick={loadMore}
-            disabled={loading}
-            className="px-6 py-3 bg-blue-500 text-white rounded shadow disabled:opacity-50"
-          >
-            {loading ? "Loading…" : "Load More"}
-          </button>
+        {/* Header */}
+        <h1 className="font-playfair text-4xl mb-4">Hotel Rooms</h1>
+
+        {/* Empty/Loading */}
+        {loading && rooms.length === 0 && <p>Loading rooms…</p>}
+        {!loading && rooms.length === 0 && (
+          <p className="text-center text-gray-500">
+            No rooms found for your criteria.
+          </p>
+        )}
+
+        {/* Room List */}
+        <div className="space-y-10">
+          {rooms.map((r) => (
+            <RoomCard
+              key={r.roomId}
+              room={r}
+              imageUrl={roomImages[r.roomId]}
+              onView={() => {
+                navigate(`/rooms/${r.hotelId}/${r.roomId}`);
+                window.scrollTo(0, 0);
+              }}
+              onBook={() => handleBookNow(r.roomId)}
+            />
+          ))}
         </div>
-      )}
-    </div>
+
+        {/* Load More */}
+        {hasMore && rooms.length > 0 && (
+          <div className="flex justify-center my-8">
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="px-6 py-3 bg-blue-500 text-white rounded shadow disabled:opacity-50"
+            >
+              {loading ? "Loading…" : "Load More"}
+            </button>
+          </div>
+        )}
+      </div>
+      <ToastContainer position="top-right" autoClose={2000} />
+    </>
   );
 }

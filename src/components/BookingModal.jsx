@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import ERROR_MESSAGES from "../constants/ErrorMessages.js";
+import { toast } from "react-toastify";
 
 // Converts ISO "YYYY-MM-DD" → "DD/MM/YYYY" for server parsing
 function toServerDate(iso = "") {
@@ -35,6 +36,7 @@ const BookingModal = ({
 
     try {
       await axiosPrivate.post("/booking", bookingDto);
+      toast.success("Booking successful!");
       setSuccess(true);
       setTimeout(() => {
         setShow(false);
@@ -44,7 +46,7 @@ const BookingModal = ({
       const msgKey = err?.response?.data?.message;
       const text =
         ERROR_MESSAGES[msgKey] || "Booking failed. Please try again.";
-      // display error toast or inline message
+      toast.error(text);
     }
   };
 
