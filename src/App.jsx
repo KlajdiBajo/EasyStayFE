@@ -22,7 +22,6 @@ import ListRooms from "./pages/hotelManager/ListRooms";
 import RequireRole from "./components/RequireRole"; // <--- This is your role-based guard
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BookingsProvider } from "./context/BookingContext";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,9 +31,7 @@ const router = createBrowserRouter(
       <Route
         path="/rooms"
         element={
-          <BookingsProvider>
             <HotelRoomsPage />
-          </BookingsProvider>
         }
       />
       <Route path="/rooms/:hotelId/:roomId" element={<HotelDetailsPage />} />
@@ -51,9 +48,7 @@ const router = createBrowserRouter(
           // <RequireRole role="USER">
           //   <MyBookingsPage />
           // </RequireRole>
-          <BookingsProvider>
             <MyBookingsPage />
-          </BookingsProvider>
         }
       />
 
